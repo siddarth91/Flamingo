@@ -1,0 +1,50 @@
+cinder_helm_values:
+  storage: powerstore
+  dependencies:
+    static:
+      api:
+        jobs:
+          - cinder-db-sync
+          - cinder-ks-user
+          - cinder-ks-endpoints
+          - cinder-rabbit-init
+      scheduler:
+        jobs:
+          - cinder-db-sync
+          - cinder-ks-user
+          - cinder-ks-endpoints
+          - cinder-rabbit-init
+      volume:
+        jobs:
+          - cinder-db-sync
+          - cinder-ks-user
+          - cinder-ks-endpoints
+          - cinder-rabbit-init
+      volume_usage_audit:
+        jobs:
+          - cinder-db-sync
+          - cinder-ks-user
+          - cinder-ks-endpoints
+          - cinder-rabbit-init
+  conf:
+    cinder:
+      DEFAULT:
+        enabled_backends: powerstore
+        default_volume_type: powerstore
+    backends:
+      rbd1: null
+      powerstore:
+        volume_backend_name: powerstore
+        volume_driver: cinder.volume.drivers.dell_emc.powerstore.driver.PowerStoreDriver
+        san_ip: <FILL IN>
+        san_login: <FILL IN>
+        san_password: <FILL IN>
+        storage_protocol: <FILL IN> # FC or iSCSI
+  manifests:
+    deployment_backup: true
+    job_backup_storage_init: true
+    job_storage_init: false
+
+nova_helm_values:
+  conf:
+    enable_iscsi: true
